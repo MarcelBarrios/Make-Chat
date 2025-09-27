@@ -21,6 +21,8 @@ $(document).ready(() => {
             currentUser = $('#username-input').val();
             $('.username-form').remove();
             $('.main-container').css('display', 'flex');
+
+            socket.emit('get channels');
         }
     });
 
@@ -83,6 +85,18 @@ $(document).ready(() => {
         $('.users-online').empty();
         for (username in onlineUsers) {
             $('.users-online').append(`<p>${username}</p>`);
+        }
+    });
+
+    socket.on('get channels', (channels) => {
+        // Clear the existing channel list
+        $('.channel').remove();
+        // Re-render the list of channels
+        for (channel in channels) {
+            // Don't re-add the General channel, it's already there
+            if (channel !== 'General') {
+                $('.channels').append(`<div class="channel">${channel}</div>`);
+            }
         }
     });
 
