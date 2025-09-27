@@ -3,27 +3,29 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
+const { engine } = require('express-handlebars');
 
 // Socket.io
 const io = require('socket.io')(server);
+
+// We'll store the users online here
+let onlineUsers = {};
+
 io.on("connection", (socket) => {
-    // This file will be read on new socket connections
+    console.log("🔌 New user connected! 🔌");
+    // This is the line that connects your chat.js file
     require('./sockets/chat.js')(io, socket);
-})
+});
 
-// CORRECTED: Require the 'engine' function directly from the library
-const { engine } = require('express-handlebars');
-
-// CORRECTED: Initialize the engine
-app.engine('handlebars', engine());
+// Express-Handlebars
+app.engine('handlebars', engine({ defaultLayout: 'main' })); // Assuming you have a main.handlebars
 app.set('view engine', 'handlebars');
-app.set('views', './views'); // Explicitly tell Express where to find your views
+app.set('views', './views');
 
 // Establish your public folder
-app.use('/public', express.static('public'))
+app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
-    // CORRECTED: Do not include the file extension
     res.render('index');
 });
 
