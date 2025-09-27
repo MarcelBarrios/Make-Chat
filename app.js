@@ -7,15 +7,12 @@ const { engine } = require('express-handlebars');
 
 // Socket.io
 const io = require('socket.io')(server);
-
-// We'll store the users online here
+//We'll store our online users here
 let onlineUsers = {};
-
 io.on("connection", (socket) => {
-    console.log("🔌 New user connected! 🔌");
-    // This is the line that connects your chat.js file
-    require('./sockets/chat.js')(io, socket);
-});
+    // Make sure to send the users to our chat file
+    require('./sockets/chat.js')(io, socket, onlineUsers);
+})
 
 // Express-Handlebars
 app.engine('handlebars', engine({ defaultLayout: 'main' })); // Assuming you have a main.handlebars
